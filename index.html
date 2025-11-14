@@ -3,45 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手机报价系统</title>
+    <title>手机操作系统</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; color: #333; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .app-card { background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); overflow: hidden; }
-        header { background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%); color: white; padding: 25px; text-align: center; }
-        header h1 { font-size: 28px; margin-bottom: 8px; font-weight: 600; }
-        .update-info { font-size: 14px; opacity: 0.9; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .search-section { padding: 25px; border-bottom: 1px solid #f0f0f0; }
-        .search-box { display: flex; gap: 12px; margin-bottom: 20px; }
-        .search-input { flex: 1; padding: 15px 20px; border: 2px solid #e0e0e0; border-radius: 12px; font-size: 16px; transition: all 0.3s; }
-        .search-input:focus { outline: none; border-color: #3498db; box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1); }
-        .search-btn { background: #3498db; color: white; border: none; padding: 0 30px; border-radius: 12px; cursor: pointer; font-size: 16px; font-weight: 600; transition: background 0.3s; }
-        .search-btn:hover { background: #2980b9; }
-        .filters { display: flex; gap: 10px; flex-wrap: wrap; }
-        .filter-btn { padding: 10px 20px; background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 25px; cursor: pointer; font-size: 14px; transition: all 0.3s; }
-        .filter-btn.active { background: #3498db; color: white; border-color: #3498db; }
-        .content-section { padding: 0 25px 25px; }
-        .section-title { font-size: 22px; font-weight: 600; color: #2c3e50; margin: 25px 0 20px; padding-bottom: 10px; border-bottom: 3px solid #3498db; display: inline-block; }
-        .phone-list { display: flex; flex-direction: column; gap: 15px; }
-        .phone-card { background: #f8f9fa; border-radius: 15px; padding: 20px; display: flex; justify-content: space-between; align-items: center; transition: transform 0.3s, box-shadow 0.3s; border-left: 5px solid #3498db; }
-        .phone-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); }
-        .phone-info { flex: 1; }
-        .phone-name { font-size: 18px; font-weight: 600; color: #2c3e50; margin-bottom: 8px; }
-        .phone-sku { font-size: 14px; color: #7f8c8d; background: #e9ecef; padding: 4px 12px; border-radius: 12px; display: inline-block; }
-        .phone-price { font-size: 24px; font-weight: 700; color: #e74c3c; }
-        .damage-tag { display: inline-block; background: #ffeb3b; color: #333; padding: 4px 12px; border-radius: 12px; font-size: 12px; margin-left: 10px; font-weight: 600; }
-        .loading, .error { text-align: center; padding: 40px; color: #7f8c8d; font-size: 16px; }
-        .loading i { font-size: 24px; margin-bottom: 15px; color: #3498db; }
-        .error { color: #e74c3c; background: #ffeaea; border-radius: 15px; margin: 20px 0; }
-        footer { text-align: center; padding: 20px; color: #7f8c8d; font-size: 14px; border-top: 1px solid #f0f0f0; margin-top: 20px; }
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            .search-box { flex-direction: column; }
-            .search-btn { padding: 15px; }
-            .phone-card { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .phone-price { align-self: flex-end; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            padding: 20px; 
+            color: #333;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+        }
+        .app-card { 
+            background: white; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); 
+            overflow: hidden;
+        }
+        header { 
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); 
+            color: white; 
+            padding: 25px; 
+            text-align: center;
+        }
+        header h1 { 
+            font-size: 28px; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+        }
+        .update_info { 
+            font-size: 14px; 
+            opacity: 0.9; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px;
+        }
+        .search-section { 
+            padding: 25px; 
+            border-bottom: 1px solid #f0f0f0; 
         }
     </style>
 </head>
@@ -49,91 +57,17 @@
     <div class="container">
         <div class="app-card">
             <header>
-                <h1>今日手机报价</h1>
-                <div class="update-info">
+                <h1>手机操作系统</h1>
+                <div class="update_info">
                     <i class="fas fa-sync-alt"></i>
-                    <span id="update-time">正在加载最新报价...</span>
+                    <span>最后更新: 2024年</span>
                 </div>
             </header>
             <div class="search-section">
-                <div class="search-box">
-                    <input type="text" class="search-input" id="search-input" placeholder="输入手机型号或SKU编码...">
-                    <button class="search-btn" id="search-btn"><i class="fas fa-search"></i> 搜索</button>
-                </div>
-                <div class="filters">
-                    <div class="filter-btn active" data-filter="all">全部品牌</div>
-                    <div class="filter-btn" data-filter="苹果">苹果</div>
-                    <div class="filter-btn" data-filter="华为">华为</div>
-                    <div class="filter-btn" data-filter="小米">小米</div>
-                    <div class="filter-btn" data-filter="OPPO">OPPO</div>
-                </div>
+                <!-- 搜索区域内容 -->
+                <p>页面内容正在开发中...</p>
             </div>
-            <div class="content-section">
-                <div class="section-title">热门机型</div>
-                <div class="phone-list" id="phone-results">
-                    <div class="loading"><i class="fas fa-spinner fa-spin"></i><div>正在加载手机报价数据...</div></div>
-                </div>
-            </div>
-            <footer>
-                <p>数据实时更新 • 价格仅供参考</p>
-                <p>客服电话: 18763976898</p>
-            </footer>
         </div>
     </div>
-    <script>
-        const initialPhoneData = [
-            { id: 1, name: "苹果15(3092)-128G粉", price: 3800, sku: "LE3-9K3", brand: "苹果" },
-            { id: 2, name: "苹果15(3092)-128G蓝", price: 3760, sku: "LG3-9M3", brand: "苹果" },
-            { id: 3, name: "苹果15(3092)-128G黑", price: 3760, sku: "LD3-9J3", brand: "苹果" },
-            { id: 4, name: "华为 Mate 50 Pro", price: 6799, sku: "HW-M50P", brand: "华为" },
-            { id: 5, name: "小米 13 Pro", price: 4999, sku: "MI-13P", brand: "小米" },
-            { id: 6, name: "OPPO Find X5 Pro", price: 5999, sku: "OP-FX5P", brand: "OPPO" },
-            { id: 7, name: "苹果15(3092)-256G粉", price: 4690, sku: "LK3-9Q3", brand: "苹果" },
-            { id: 8, name: "苹果15(3092)-256G蓝", price: 4680, sku: "LM3-9T3", brand: "苹果" },
-            { id: 9, name: "苹果15(3092)-256G黑", price: 4680, sku: "LJ3-9P3", brand: "苹果" }
-        ];
-        document.addEventListener('DOMContentLoaded', function() {
-            displayPhones(initialPhoneData);
-            document.getElementById('update-time').textContent = `最后更新: ${new Date().toLocaleString()}`;
-            setupEventListeners();
-        });
-        function displayPhones(phones) {
-            const resultsContainer = document.getElementById('phone-results');
-            if (!phones || phones.length === 0) {
-                resultsContainer.innerHTML = '<div class="error">暂无报价数据</div>';
-                return;
-            }
-            let html = '';
-            phones.forEach(phone => {
-                html += `<div class="phone-card" data-brand="${phone.brand || '其他'}"><div class="phone-info"><div class="phone-name">${phone.name}${phone.tag ? `<span class="damage-tag">${phone.tag}</span>` : ''}</div><div class="phone-sku">${phone.sku}</div></div><div class="phone-price">¥${phone.price}</div></div>`;
-            });
-            resultsContainer.innerHTML = html;
-        }
-        function performSearch() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            const phoneCards = document.querySelectorAll('.phone-card');
-            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-            phoneCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                const brand = card.dataset.brand;
-                const matchesSearch = searchTerm === '' || text.includes(searchTerm);
-                const matchesFilter = activeFilter === 'all' || brand === activeFilter;
-                card.style.display = (matchesSearch && matchesFilter) ? 'flex' : 'none';
-            });
-        }
-        function setupEventListeners() {
-            document.getElementById('search-btn').addEventListener('click', performSearch);
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') performSearch();
-            });
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    performSearch();
-                });
-            });
-        }
-    </script>
 </body>
 </html>
