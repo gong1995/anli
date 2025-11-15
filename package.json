@@ -1,7 +1,0 @@
-{
-  "name": "mobile-price-system",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "mkdir -p public && cp index.html public/ && echo 'Static files copied'"
-  }
-}
