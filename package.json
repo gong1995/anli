@@ -2,9 +2,6 @@
   "name": "mobile-price-system",
   "version": "1.0.0",
   "scripts": {
-    "build": "echo 'Static site build complete'"
-  },
-  "static": {
-    "public": "."
+    "build": "mkdir -p public && cp index.html public/ && echo 'Static files copied'"
   }
 }
