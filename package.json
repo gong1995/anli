@@ -1,0 +1,9 @@
+{
+  "name": "mobile-price-system",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "echo 'Building static site' && mkdir -p public && cp -r *.html public/ 2>/dev/null || true"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
