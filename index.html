@@ -1,517 +1,164 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手机报价系统</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .app-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 25px;
-            text-align: center;
-        }
-        
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        
-        .update-info {
-            font-size: 14px;
-            opacity: 0.9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .search-section {
-            padding: 25px;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .search-box {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        
-        .search-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .search-input:focus {
-            outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }
-        
-        .search-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 0 30px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-        
-        .search-btn:hover {
-            background: #2980b9;
-        }
-        
-        .filters {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .filter-btn {
-            padding: 10px 20px;
-            background: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
-        
-        .filter-btn.active {
-            background: #3498db;
-            color: white;
-            border-color: #3498db;
-        }
-        
-        .content-section {
-            padding: 0 25px 25px;
-        }
-        
-        .section-title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 25px 0 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #3498db;
-            display: inline-block;
-        }
-        
-        .phone-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .phone-card {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-left: 5px solid #3498db;
-        }
-        
-        .phone-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .phone-info {
-            flex: 1;
-        }
-        
-        .phone-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 8px;
-        }
-        
-        .phone-sku {
-            font-size: 14px;
-            color: #7f8c8d;
-            background: #e9ecef;
-            padding: 4px 12px;
-            border-radius: 12px;
-            display: inline-block;
-        }
-        
-        .phone-price {
-            font-size: 24px;
-            font-weight: 700;
-            color: #e74c3c;
-        }
-        
-        .damage-tag {
-            display: inline-block;
-            background: #ffeb3b;
-            color: #333;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-            font-weight: 600;
-        }
-        
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
-            font-size: 16px;
-        }
-        
-        .loading i {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #3498db;
-        }
-        
-        .error {
-            text-align: center;
-            padding: 40px;
-            color: #e74c3c;
-            background: #ffeaea;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
-        
-        .update-instruction {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            font-size: 14px;
-            color: #2e7d32;
-        }
-        
-        .refresh-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            margin-left: 10px;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #7f8c8d;
-            font-size: 14px;
-            border-top: 1px solid #f0f0f0;
-            margin-top: 20px;
-        }
-        
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            
-            .search-box {
-                flex-direction: column;
-            }
-            
-            .search-btn {
-                padding: 15px;
-            }
-            
-            .phone-card {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .phone-price {
-                align-self: flex-end;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="app-card">
-            <header>
-                <h1>今日手机报价</h1>
-                <div class="update-info">
-                    <i class="fas fa-sync-alt"></i>
-                    <span id="update-time">正在加载最新报价...</span>
-                    <button class="refresh-btn" onclick="loadPriceFromTencent()">
-                        <i class="fas fa-redo"></i> 刷新
-                    </button>
-                </div>
-            </header>
-            
-            <div class="search-section">
-                <div class="search-box">
-                    <input type="text" class="search-input" id="search-input" placeholder="输入手机型号或SKU编码...">
-                    <button class="search-btn" id="search-btn">
-                        <i class="fas fa-search"></i> 搜索
-                    </button>
-                </div>
-                
-                <div class="filters">
-                    <div class="filter-btn active" data-filter="all">全部品牌</div>
-                    <div class="filter-btn" data-filter="苹果">苹果</div>
-                    <div class="filter-btn" data-filter="华为">华为</div>
-                    <div class="filter-btn" data-filter="小米">小米</div>
-                    <div class="filter-btn" data-filter="OPPO">OPPO</div>
-                </div>
-            </div>
-            
-            <div class="content-section">
-                <div class="update-instruction">
-                    <strong>📝 更新说明：</strong> 价格数据实时同步腾讯文档，修改表格后点击刷新按钮即可更新
-                </div>
-                
-                <div class="section-title">热门机型</div>
-                
-                <div class="phone-list" id="phone-results">
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <div>正在从腾讯文档加载报价数据...</div>
-                    </div>
-                </div>
-            </div>
-            
-            <footer>
-                <p>数据实时更新 • 价格仅供参考</p>
-                <p>客服电话: 18763976898</p>
-            </footer>
-        </div>
-    </div>
+<script>
+    // 腾讯文档配置 - 使用您的文档ID
+    const TENCENT_SHEET_ID = '【腾讯文档】型号
+https://docs.qq.com/sheet/DVnZ0ZW53VkRjeUJ6?tab=BB08J2';
+    
+    // 备用数据
+    const backupPhoneData = [
+        { name: "苹果15(3092)-128G粉", price: 3800, sku: "LE3-9K3", brand: "苹果" },
+        { name: "苹果15(3092)-128G蓝", price: 3760, sku: "LG3-9M3", brand: "苹果" },
+        { name: "苹果15(3092)-128G黑", price: 3760, sku: "LD3-9J3", brand: "苹果" }
+    ];
 
-    <script>
-        // 腾讯文档配置 - 使用您的文档ID
-        const TENCENT_SHEET_ID = 'DVnZ0ZW53VkRjeUJ6'; // 您的文档ID
+    // 初始化页面
+    document.addEventListener('DOMContentLoaded', function() {
+        // 先显示备用数据
+        displayPhones(backupPhoneData);
+        document.getElementById('update-time').innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 正在尝试连接腾讯文档...';
         
-        // 备用数据（当腾讯文档加载失败时使用）
-        const backupPhoneData = [
-            { name: "苹果15(3092)-128G粉", price: 3800, sku: "LE3-9K3", brand: "苹果" },
-            { name: "苹果15(3092)-128G蓝", price: 3760, sku: "LG3-9M3", brand: "苹果" },
-            { name: "苹果15(3092)-128G黑", price: 3760, sku: "LD3-9J3", brand: "苹果" },
-            { name: "华为 Mate 50 Pro", price: 6799, sku: "HW-M50P", brand: "华为" },
-            { name: "小米 13 Pro", price: 4999, sku: "MI-13P", brand: "小米" }
-        ];
+        // 然后尝试加载腾讯文档数据
+        setTimeout(loadPriceFromTencent, 1000);
+        setupEventListeners();
+    });
 
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            loadPriceFromTencent();
-            setupEventListeners();
+    // 从腾讯文档加载价格数据 - 简化版本
+    async function loadPriceFromTencent() {
+        try {
+            // 方法1：尝试直接访问
+            await tryDirectAccess();
+            
+        } catch (error) {
+            console.log('方法1失败，尝试方法2:', error);
+            try {
+                // 方法2：使用图片方式触发加载
+                await tryImageMethod();
+            } catch (error2) {
+                console.log('所有方法都失败，使用备用数据:', error2);
+                document.getElementById('update-time').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 最后更新: ' + new Date().toLocaleString() + ' (本地数据)';
+            }
+        }
+    }
+
+    // 方法1：直接访问
+    async function tryDirectAccess() {
+        const url = `https://docs.qq.com/dop-api/opendoc?id=${TENCENT_SHEET_ID}`;
+        
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('直接访问失败');
+        
+        const text = await response.text();
+        if (!text.includes('手机型号')) {
+            throw new Error('未找到数据');
+        }
+        
+        // 简单解析HTML中的表格数据
+        const phones = parseHTMLTable(text);
+        if (phones.length > 0) {
+            displayPhones(phones);
+            document.getElementById('update-time').innerHTML = '<i class="fas fa-check"></i> 最后更新: ' + new Date().toLocaleString();
+        } else {
+            throw new Error('解析失败');
+        }
+    }
+
+    // 方法2：图片方式
+    async function tryImageMethod() {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = function() {
+                // 图片加载成功，但无法获取数据
+                reject(new Error('图片方式无法获取数据'));
+            };
+            img.onerror = function() {
+                reject(new Error('图片加载失败'));
+            };
+            img.src = `https://docs.qq.com/dop-api/opendoc?id=${TENCENT_SHEET_ID}`;
         });
+    }
 
-        // 从腾讯文档加载价格数据
-        async function loadPriceFromTencent() {
-            try {
-                document.getElementById('update-time').innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> 正在更新...';
-                
-                // 使用腾讯文档的API接口
-                const timestamp = new Date().getTime();
-                const url = `https://docs.qq.com/dop-api/opendoc?id=${TENCENT_SHEET_ID}&tab=BB08J2&timestamp=${timestamp}`;
-                
-                const response = await fetch(url, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`网络请求失败: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (data && data.data) {
-                    const phones = parseTencentData(data.data);
-                    if (phones.length > 0) {
-                        displayPhones(phones);
-                        document.getElementById('update-time').innerHTML = '<i class="fas fa-check"></i> 最后更新: ' + new Date().toLocaleString();
-                        return;
-                    }
-                }
-                
-                throw new Error('未找到有效数据');
-                
-            } catch (error) {
-                console.error('腾讯文档加载失败:', error);
-                displayPhones(backupPhoneData);
-                document.getElementById('update-time').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 最后更新: ' + new Date().toLocaleString() + ' (备用数据)';
-            }
-        }
-
-        // 解析腾讯文档数据
-        function parseTencentData(data) {
-            const phones = [];
+    // 解析HTML表格数据
+    function parseHTMLTable(html) {
+        const phones = [];
+        try {
+            // 简单的表格解析逻辑
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = html;
             
-            try {
-                // 腾讯文档的数据结构
-                if (!data.sheets || !data.sheets[0]) {
-                    return phones;
-                }
-                
-                const sheet = data.sheets[0];
-                const cells = sheet.cell;
-                
-                if (!cells) {
-                    return phones;
-                }
-                
-                // 从第2行开始读取（跳过表头）
-                let rowIndex = 2;
-                
-                while (true) {
-                    const nameKey = `A${rowIndex}`;
-                    const priceKey = `B${rowIndex}`;
-                    const skuKey = `C${rowIndex}`;
-                    const tagKey = `D${rowIndex}`;
-                    const brandKey = `E${rowIndex}`;
-                    
-                    // 检查是否有型号数据
-                    if (!cells[nameKey] || !cells[nameKey].v) {
-                        break; // 没有更多数据
-                    }
-                    
-                    const phoneData = {
-                        name: cells[nameKey].v || '',
-                        price: cells[priceKey] ? parseFloat(cells[priceKey].v) || 0 : 0,
-                        sku: cells[skuKey] ? (cells[skuKey].v || '') : '',
-                        tag: cells[tagKey] ? (cells[tagKey].v || '') : '',
-                        brand: cells[brandKey] ? (cells[brandKey].v || '其他') : '其他'
-                    };
-                    
-                    // 只添加有型号和价格的数据
-                    if (phoneData.name && phoneData.price > 0) {
-                        phones.push(phoneData);
-                    }
-                    
-                    rowIndex++;
-                }
-                
-            } catch (error) {
-                console.error('解析腾讯文档数据时出错:', error);
-            }
+            // 这里需要根据实际HTML结构调整
+            // 暂时返回空数组，使用备用数据
+            return phones;
             
+        } catch (error) {
+            console.error('HTML解析错误:', error);
             return phones;
         }
+    }
 
-        // 显示手机列表
-        function displayPhones(phones) {
-            const resultsContainer = document.getElementById('phone-results');
-            
-            if (!phones || phones.length === 0) {
-                resultsContainer.innerHTML = '<div class="error">暂无报价数据，请检查腾讯文档配置</div>';
-                return;
-            }
-            
-            let html = '';
-            phones.forEach(phone => {
-                html += `
-                    <div class="phone-card" data-brand="${phone.brand || '其他'}">
-                        <div class="phone-info">
-                            <div class="phone-name">
-                                ${phone.name}
-                                ${phone.tag ? `<span class="damage-tag">${phone.tag}</span>` : ''}
-                            </div>
-                            <div class="phone-sku">${phone.sku || '暂无SKU'}</div>
+    // 显示手机列表
+    function displayPhones(phones) {
+        const resultsContainer = document.getElementById('phone-results');
+        
+        if (!phones || phones.length === 0) {
+            resultsContainer.innerHTML = '<div class="error">暂无报价数据</div>';
+            return;
+        }
+        
+        let html = '';
+        phones.forEach(phone => {
+            html += `
+                <div class="phone-card" data-brand="${phone.brand || '其他'}">
+                    <div class="phone-info">
+                        <div class="phone-name">
+                            ${phone.name}
+                            ${phone.tag ? `<span class="damage-tag">${phone.tag}</span>` : ''}
                         </div>
-                        <div class="phone-price">¥${phone.price}</div>
+                        <div class="phone-sku">${phone.sku || '暂无SKU'}</div>
                     </div>
-                `;
-            });
-            
-            resultsContainer.innerHTML = html;
-        }
+                    <div class="phone-price">¥${phone.price}</div>
+                </div>
+            `;
+        });
+        
+        resultsContainer.innerHTML = html;
+    }
 
-        // 搜索功能
-        function performSearch() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            const phoneCards = document.querySelectorAll('.phone-card');
-            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+    // 搜索功能
+    function performSearch() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+        const phoneCards = document.querySelectorAll('.phone-card');
+        const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+        
+        let visibleCount = 0;
+        
+        phoneCards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            const brand = card.dataset.brand;
             
-            let visibleCount = 0;
+            const matchesSearch = searchTerm === '' || text.includes(searchTerm);
+            const matchesFilter = activeFilter === 'all' || brand === activeFilter;
             
-            phoneCards.forEach(card => {
-                const text = card.textContent.toLowerCase();
-                const brand = card.dataset.brand;
-                
-                const matchesSearch = searchTerm === '' || text.includes(searchTerm);
-                const matchesFilter = activeFilter === 'all' || brand === activeFilter;
-                
-                if (matchesSearch && matchesFilter) {
-                    card.style.display = 'flex';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // 如果没有搜索结果，显示提示
-            if (visibleCount === 0 && searchTerm !== '') {
-                document.getElementById('phone-results').innerHTML = 
-                    `<div class="error">未找到包含"${searchTerm}"的机型</div>`;
+            if (matchesSearch && matchesFilter) {
+                card.style.display = 'flex';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
             }
-        }
+        });
+    }
 
-        // 设置事件监听器
-        function setupEventListeners() {
-            // 设置搜索功能
-            document.getElementById('search-btn').addEventListener('click', performSearch);
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') performSearch();
+    // 设置事件监听器
+    function setupEventListeners() {
+        document.getElementById('search-btn').addEventListener('click', performSearch);
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                performSearch();
             });
-            
-            // 设置筛选按钮
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    performSearch();
-                });
-            });
-            
-            // 每10分钟自动刷新一次
-            setInterval(loadPriceFromTencent, 10 * 60 * 1000);
-        }
-    </script>
-</body>
-</html>
+        });
+    }
+</script>
