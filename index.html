@@ -70,6 +70,7 @@
             gap: 10px;
             margin-bottom: 15px;
             flex-wrap: wrap;
+            justify-content: center;
         }
         
         .filter-btn {
@@ -121,6 +122,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
         
         .tag {
@@ -128,6 +130,7 @@
             border-radius: 3px;
             font-size: 12px;
             font-weight: bold;
+            white-space: nowrap;
         }
         
         .tag-new {
@@ -149,11 +152,13 @@
             color: #e74c3c;
             font-weight: bold;
             font-size: 16px;
+            white-space: nowrap;
         }
         
         .phone-stock {
             text-align: center;
             color: #7f8c8d;
+            white-space: nowrap;
         }
         
         .buy-btn {
@@ -165,10 +170,16 @@
             cursor: pointer;
             font-weight: bold;
             transition: background 0.3s;
+            white-space: nowrap;
         }
         
         .buy-btn:hover {
             background: #c0392b;
+        }
+        
+        .buy-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
         }
         
         .brand-section {
@@ -220,13 +231,38 @@
             margin: 10px 0;
         }
         
+        /* 移动端优化 */
         @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
             .table-header, .phone-row {
                 grid-template-columns: 2fr 1fr 1fr 1fr;
+                gap: 8px;
+                padding: 10px;
             }
             
             .phone-name {
                 font-size: 14px;
+            }
+            
+            .phone-price {
+                font-size: 14px;
+            }
+            
+            .buy-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+            
+            .filters {
+                gap: 5px;
+            }
+            
+            .filter-btn {
+                padding: 6px 10px;
+                font-size: 12px;
             }
         }
         
@@ -249,6 +285,10 @@
             
             .buy-btn {
                 width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 20px;
             }
         }
     </style>
@@ -297,6 +337,12 @@
             }
             
             init() {
+                // 先尝试使用缓存数据快速显示
+                if (this.useCachedData(true)) {
+                    console.log('使用缓存数据快速显示');
+                }
+                
+                // 然后尝试加载最新数据
                 this.loadData();
                 this.setupEventListeners();
                 
@@ -306,13 +352,19 @@
             
             async loadData() {
                 try {
-                    this.showLoading();
-                    
                     console.log('正在从 Google Sheets 获取数据...');
+                    
+                    // 添加超时控制
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
                     
                     // 添加时间戳参数避免缓存
                     const url = this.csvUrl + '&t=' + Date.now();
-                    const response = await fetch(url);
+                    const response = await fetch(url, { 
+                        signal: controller.signal 
+                    });
+                    
+                    clearTimeout(timeoutId);
                     
                     if (!response.ok) {
                         throw new Error('网络请求失败: ' + response.status);
@@ -331,8 +383,15 @@
                     
                 } catch (error) {
                     console.error('获取价格失败:', error);
-                    this.showError('获取价格失败: ' + error.message + '，使用缓存数据');
-                    this.useCachedData();
+                    if (error.name === 'AbortError') {
+                        this.showError('请求超时，使用缓存数据');
+                    } else {
+                        this.showError('获取价格失败: ' + error.message + '，使用缓存数据');
+                    }
+                    // 确保使用缓存数据
+                    if (this.phones.length === 0) {
+                        this.useCachedData();
+                    }
                 }
             }
             
@@ -539,7 +598,7 @@
                         <div>
                             ${phone.stock > 0 ? 
                                 '<button class="buy-btn">购买</button>' : 
-                                '<button class="buy-btn" disabled style="background:#95a5a6;">缺货</button>'
+                                '<button class="buy-btn" disabled>缺货</button>'
                             }
                         </div>
                     </div>
@@ -563,19 +622,24 @@
                 }));
             }
             
-            useCachedData() {
+            useCachedData(silent = false) {
                 const cached = localStorage.getItem('phonePrices');
                 if (cached) {
                     const { data, timestamp } = JSON.parse(cached);
                     this.phones = data;
                     this.filteredPhones = [...data];
-                    this.render();
-                    
-                    const time = new Date(timestamp).toLocaleString('zh-CN');
-                    document.getElementById('updateTime').textContent = `${time} (缓存)`;
+                    if (!silent) {
+                        this.render();
+                        const time = new Date(timestamp).toLocaleString('zh-CN');
+                        document.getElementById('updateTime').textContent = `${time} (缓存)`;
+                    }
+                    return true;
                 } else {
-                    // 如果没有缓存数据，显示示例数据
-                    this.showExampleData();
+                    if (!silent) {
+                        // 如果没有缓存数据，显示示例数据
+                        this.showExampleData();
+                    }
+                    return false;
                 }
             }
             
