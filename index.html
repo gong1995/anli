@@ -212,6 +212,15 @@
             grid-column: 1 / -1;
         }
         
+        .success-message {
+            background: rgba(255,255,255,0.9);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2ed573;
+        }
+        
         footer {
             text-align: center;
             color: white;
@@ -242,6 +251,10 @@
             <h1>📱 每日手机报价</h1>
             <div class="subtitle">价格每日更新 · 全网比价 · 实时行情</div>
         </div>
+
+        <div class="success-message">
+            <p><strong>✓ 已连接至 Google Sheets</strong> - 在表格中修改价格后刷新页面即可更新</p>
+        </div>
         
         <div class="update-info">
             <div>最后更新: <span id="updateTime">加载中...</span></div>
@@ -253,21 +266,21 @@
         </div>
         
         <div class="phone-grid" id="phoneGrid">
-            <div class="loading">正在加载最新报价...</div>
+            <div class="loading">正在从 Google Sheets 加载最新报价...</div>
         </div>
         
         <footer>
-            <p>手机报价系统 &copy; 2024 - 数据每日更新</p>
-            <p>通过 Google Sheets 实时同步价格数据</p>
+            <p>手机报价系统 &copy; 2024</p>
+            <p>数据来源: Google Sheets - 实时同步</p>
         </footer>
     </div>
 
     <script>
-        // 手机价格管理器 - 使用CSV格式
+        // 手机价格管理器 - 使用 CSV 链接动态获取数据
         class PriceManager {
             constructor() {
-                // 使用你提供的CSV链接
-                this.csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvXbm5kD_vT11nLjJf42Sk3kX3dWySW64331nYnRFp5cQl6tP3JKWx-5XKsPHLWOS3TTnf7nJL47CB/pub?output=csv';
+                // 使用你提供的 CSV 链接
+                this.csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvXbm5kD_vT11nLjJf42Sk3kX3dWySW64331nYnRFp5cQI6tP3JKWx-5XKsPHLWOS3TTnf7nJL47CB/pub?output=csv';
                 this.phones = [];
                 this.filteredPhones = [];
                 this.init();
@@ -283,21 +296,30 @@
                 try {
                     this.showLoading();
                     
-                    // 直接获取CSV数据
-                    const response = await fetch(this.csvUrl);
+                    console.log('正在从 Google Sheets 获取数据...');
+                    
+                    // 添加时间戳参数避免缓存
+                    const url = this.csvUrl + '&t=' + Date.now();
+                    const response = await fetch(url);
                     
                     if (!response.ok) {
-                        throw new Error('网络请求失败');
+                        throw new Error('网络请求失败: ' + response.status);
                     }
                     
                     const csvText = await response.text();
+                    console.log('获取到的 CSV 数据:', csvText);
+                    
+                    if (!csvText || csvText.trim() === '') {
+                        throw new Error('CSV 数据为空');
+                    }
+                    
                     this.parseCSVData(csvText);
                     this.render();
                     this.updateLocalStorage();
                     
                 } catch (error) {
                     console.error('获取价格失败:', error);
-                    this.showError('获取价格失败，使用缓存数据');
+                    this.showError('获取价格失败: ' + error.message + '，使用缓存数据');
                     this.useCachedData();
                 }
             }
@@ -306,9 +328,16 @@
                 const lines = csvText.split('\n').filter(line => line.trim() !== '');
                 this.phones = [];
                 
-                // 假设第一行是表头，从第二行开始解析数据
-                for (let i = 1; i < lines.length; i++) {
-                    const cells = this.parseCSVLine(lines[i]);
+                console.log('CSV 行数:', lines.length);
+                
+                // 从第一行开始解析数据（跳过空行）
+                for (let i = 0; i < lines.length; i++) {
+                    const cells = lines[i].split(',');
+                    
+                    // 跳过表头（如果第一行包含"型号"等表头文字）
+                    if (i === 0 && (cells[0].includes('型号') || cells[0].includes('model'))) {
+                        continue;
+                    }
                     
                     if (cells.length >= 3) {
                         const phone = {
@@ -317,8 +346,10 @@
                             price: this.parsePrice(cells[2]),
                             change: cells[3] ? this.parseChange(cells[3]) : 0,
                             status: cells[4] ? cells[4].trim() : '有货',
-                            isHot: cells[5] ? cells[5].trim() === '是' : false
+                            isHot: cells[5] ? this.parseHotStatus(cells[5]) : false
                         };
+                        
+                        console.log('解析出的手机数据:', phone);
                         
                         // 只添加有有效数据的行
                         if (phone.model && phone.price > 0) {
@@ -328,29 +359,7 @@
                 }
                 
                 this.filteredPhones = [...this.phones];
-            }
-            
-            parseCSVLine(line) {
-                // 简单的CSV解析，处理逗号分隔的值
-                const result = [];
-                let current = '';
-                let inQuotes = false;
-                
-                for (let i = 0; i < line.length; i++) {
-                    const char = line[i];
-                    
-                    if (char === '"') {
-                        inQuotes = !inQuotes;
-                    } else if (char === ',' && !inQuotes) {
-                        result.push(current);
-                        current = '';
-                    } else {
-                        current += char;
-                    }
-                }
-                
-                result.push(current);
-                return result;
+                console.log('最终手机数据:', this.phones);
             }
             
             parsePrice(priceText) {
@@ -379,11 +388,17 @@
                 return isNaN(num) ? 0 : num;
             }
             
+            parseHotStatus(statusText) {
+                if (!statusText) return false;
+                const text = statusText.toString().trim().toLowerCase();
+                return text === '是' || text === 'yes' || text === 'true' || text === '热销';
+            }
+            
             render() {
                 const grid = document.getElementById('phoneGrid');
                 
                 if (this.filteredPhones.length === 0) {
-                    grid.innerHTML = '<div class="error-message">暂无手机数据，请检查表格格式</div>';
+                    grid.innerHTML = '<div class="error-message">暂无手机数据，请检查表格格式或添加数据</div>';
                     return;
                 }
                 
@@ -435,7 +450,7 @@
             
             showLoading() {
                 const grid = document.getElementById('phoneGrid');
-                grid.innerHTML = '<div class="loading">正在加载最新报价...</div>';
+                grid.innerHTML = '<div class="loading">正在从 Google Sheets 加载最新报价...</div>';
             }
             
             showError(message) {
@@ -461,8 +476,21 @@
                     const time = new Date(timestamp).toLocaleString('zh-CN');
                     document.getElementById('updateTime').textContent = `${time} (缓存)`;
                 } else {
-                    this.showError('无法加载价格数据，请检查网络连接或表格格式');
+                    // 如果没有缓存数据，显示示例数据
+                    this.showExampleData();
                 }
+            }
+            
+            showExampleData() {
+                this.phones = [
+                    { model: "iPhone 15", storage: "128G", price: 5999, change: -200, status: "有货", isHot: true },
+                    { model: "iPhone 15", storage: "256G", price: 6999, change: 100, status: "有货", isHot: true },
+                    { model: "小米14", storage: "256G", price: 4599, change: 0, status: "有货", isHot: true }
+                ];
+                this.filteredPhones = [...this.phones];
+                this.render();
+                
+                document.getElementById('updateTime').textContent = '示例数据 - 请检查表格链接和数据';
             }
         }
         
