@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>手机报价 - 每日更新</title>
+    <title>今日手机报价</title>
     <style>
         * {
             margin: 0;
@@ -13,42 +13,181 @@
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            background-color: #f5f5f5;
             color: #333;
+            line-height: 1.6;
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 15px;
         }
         
         .header {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
             text-align: center;
-            margin-bottom: 30px;
-            color: white;
         }
         
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #e74c3c;
+            font-size: 24px;
+            margin-bottom: 5px;
         }
         
         .header .subtitle {
-            font-size: 1.1em;
-            opacity: 0.9;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .search-box {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #3498db;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        
+        .price-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .phone-row {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            align-items: center;
+        }
+        
+        .phone-row:hover {
+            background: #f8f9fa;
+        }
+        
+        .phone-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tag {
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .tag-new {
+            background: #ffeb3b;
+            color: #333;
+        }
+        
+        .tag-damage {
+            background: #ff9800;
+            color: white;
+        }
+        
+        .tag-hot {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .phone-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .phone-stock {
+            text-align: center;
+            color: #7f8c8d;
+        }
+        
+        .buy-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .buy-btn:hover {
+            background: #c0392b;
+        }
+        
+        .brand-section {
+            margin-bottom: 5px;
+        }
+        
+        .brand-title {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+            color: #2c3e50;
         }
         
         .update-info {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-top: 15px;
+            color: #7f8c8d;
+            font-size: 14px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -57,190 +196,59 @@
         }
         
         .refresh-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: #3498db;
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .refresh-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .search-box {
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 12px 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        
-        .search-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        
-        .phone-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        .phone-card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .phone-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
-        }
-        
-        .phone-card.hot::before {
-            content: "🔥 热销";
-            position: absolute;
-            top: 10px;
-            right: -25px;
-            background: #ff4757;
-            color: white;
-            padding: 4px 30px;
             font-size: 12px;
-            transform: rotate(45deg);
-        }
-        
-        .phone-image {
-            text-align: center;
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #2f3542;
-        }
-        
-        .phone-model {
-            font-size: 1.3em;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #2f3542;
-        }
-        
-        .phone-storage {
-            color: #747d8c;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-        }
-        
-        .phone-price {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #ff4757;
-            margin-bottom: 8px;
-        }
-        
-        .price-change {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-        
-        .price-up {
-            background: #ffcccc;
-            color: #ff4757;
-        }
-        
-        .price-down {
-            background: #ccffcc;
-            color: #2ed573;
-        }
-        
-        .price-stable {
-            background: #f1f2f6;
-            color: #747d8c;
-        }
-        
-        .phone-status {
-            margin-top: 10px;
-            font-size: 0.9em;
-            padding: 4px 8px;
-            border-radius: 12px;
-            display: inline-block;
-        }
-        
-        .in-stock {
-            background: #ccffcc;
-            color: #2ed573;
-        }
-        
-        .out-stock {
-            background: #ffcccc;
-            color: #ff4757;
         }
         
         .loading {
             text-align: center;
             padding: 40px;
-            color: white;
-            font-size: 1.2em;
-            grid-column: 1 / -1;
+            color: #7f8c8d;
         }
         
         .error-message {
             text-align: center;
             padding: 40px;
-            color: white;
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-            grid-column: 1 / -1;
-        }
-        
-        .success-message {
-            background: rgba(255,255,255,0.9);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            color: #2ed573;
-        }
-        
-        footer {
-            text-align: center;
-            color: white;
-            padding: 20px;
-            margin-top: 40px;
-            opacity: 0.8;
+            color: #e74c3c;
+            background: white;
+            border-radius: 8px;
+            margin: 10px 0;
         }
         
         @media (max-width: 768px) {
-            .phone-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            .table-header, .phone-row {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
             }
             
-            .header h1 {
-                font-size: 2em;
+            .phone-name {
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .table-header, .phone-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
             }
             
-            .update-info {
-                flex-direction: column;
-                gap: 10px;
+            .table-header {
+                display: none;
+            }
+            
+            .phone-row {
+                border: 1px solid #eee;
+                border-radius: 6px;
+                margin-bottom: 10px;
+                padding: 15px;
+            }
+            
+            .buy-btn {
+                width: 100%;
             }
         }
     </style>
@@ -248,31 +256,32 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📱 每日手机报价</h1>
-            <div class="subtitle">价格每日更新 · 全网比价 · 实时行情</div>
+            <h1>今日手机报价</h1>
+            <div class="subtitle">36610.139erp.com - 实时更新</div>
         </div>
-
-        <div class="success-message">
-            <p><strong>✓ 已连接至 Google Sheets</strong> - 在表格中修改价格后刷新页面即可更新</p>
+        
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 请输入关键字">
+        </div>
+        
+        <div class="filters">
+            <button class="filter-btn active" data-category="all">全部分类</button>
+            <button class="filter-btn" data-category="apple">苹果</button>
+            <button class="filter-btn" data-category="xiaomi">小米</button>
+            <button class="filter-btn" data-category="huawei">华为</button>
+            <button class="filter-btn" data-category="samsung">三星</button>
+            <button class="filter-btn" data-category="oppo">OPPO</button>
+            <button class="filter-btn" data-category="vivo">VIVO</button>
+        </div>
+        
+        <div class="price-table" id="priceTable">
+            <div class="loading">正在加载报价...</div>
         </div>
         
         <div class="update-info">
             <div>最后更新: <span id="updateTime">加载中...</span></div>
             <button class="refresh-btn" onclick="priceManager.loadData()">🔄 刷新价格</button>
         </div>
-        
-        <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索手机型号..." onkeyup="priceManager.filterProducts()">
-        </div>
-        
-        <div class="phone-grid" id="phoneGrid">
-            <div class="loading">正在从 Google Sheets 加载最新报价...</div>
-        </div>
-        
-        <footer>
-            <p>手机报价系统 &copy; 2024</p>
-            <p>数据来源: Google Sheets - 实时同步</p>
-        </footer>
     </div>
 
     <script>
@@ -283,11 +292,14 @@
                 this.csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvXbm5kD_vT11nLjJf42Sk3kX3dWySW64331nYnRFp5cQI6tP3JKWx-5XKsPHLWOS3TTnf7nJL47CB/pub?output=csv';
                 this.phones = [];
                 this.filteredPhones = [];
+                this.currentCategory = 'all';
                 this.init();
             }
             
             init() {
                 this.loadData();
+                this.setupEventListeners();
+                
                 // 每30分钟自动更新一次
                 setInterval(() => this.loadData(), 30 * 60 * 1000);
             }
@@ -340,19 +352,20 @@
                     }
                     
                     if (cells.length >= 3) {
+                        // 根据CSV列解析数据
                         const phone = {
-                            model: cells[0]?.trim() || '',
-                            storage: cells[1]?.trim() || '',
-                            price: this.parsePrice(cells[2]),
-                            change: cells[3] ? this.parseChange(cells[3]) : 0,
-                            status: cells[4] ? cells[4].trim() : '有货',
-                            isHot: cells[5] ? this.parseHotStatus(cells[5]) : false
+                            id: i,
+                            name: cells[0]?.trim() || '',
+                            price: this.parsePrice(cells[1]),
+                            stock: cells[2] ? parseInt(cells[2]) || 1 : 1,
+                            tags: this.parseTags(cells[0]),
+                            brand: this.parseBrand(cells[0])
                         };
                         
                         console.log('解析出的手机数据:', phone);
                         
                         // 只添加有有效数据的行
-                        if (phone.model && phone.price > 0) {
+                        if (phone.name && phone.price > 0) {
                             this.phones.push(phone);
                         }
                     }
@@ -369,93 +382,178 @@
                 return match ? parseFloat(match[1]) : 0;
             }
             
-            parseChange(changeText) {
-                if (!changeText) return 0;
+            parseTags(name) {
+                const tags = [];
+                const nameLower = name.toLowerCase();
                 
-                const text = changeText.toString().trim();
-                
-                // 解析价格变化，支持 ↑100, ↓200, 平 等格式
-                if (text.includes('↑')) {
-                    return parseInt(text.replace('↑', '')) || 0;
-                } else if (text.includes('↓')) {
-                    return -parseInt(text.replace('↓', '')) || 0;
-                } else if (text === '平' || text === '持平') {
-                    return 0;
+                if (nameLower.includes('新') || nameLower.includes('new')) {
+                    tags.push('新');
+                }
+                if (nameLower.includes('盒损') || nameLower.includes('damage')) {
+                    tags.push('盒损');
+                }
+                if (nameLower.includes('热销') || nameLower.includes('hot')) {
+                    tags.push('热销');
                 }
                 
-                // 直接尝试解析数字
-                const num = parseInt(text);
-                return isNaN(num) ? 0 : num;
+                return tags;
             }
             
-            parseHotStatus(statusText) {
-                if (!statusText) return false;
-                const text = statusText.toString().trim().toLowerCase();
-                return text === '是' || text === 'yes' || text === 'true' || text === '热销';
+            parseBrand(name) {
+                const nameLower = name.toLowerCase();
+                
+                if (nameLower.includes('苹果') || nameLower.includes('iphone')) {
+                    return 'apple';
+                } else if (nameLower.includes('小米')) {
+                    return 'xiaomi';
+                } else if (nameLower.includes('华为')) {
+                    return 'huawei';
+                } else if (nameLower.includes('三星')) {
+                    return 'samsung';
+                } else if (nameLower.includes('oppo')) {
+                    return 'oppo';
+                } else if (nameLower.includes('vivo')) {
+                    return 'vivo';
+                } else {
+                    return 'other';
+                }
+            }
+            
+            setupEventListeners() {
+                // 搜索功能
+                const searchInput = document.getElementById('searchInput');
+                searchInput.addEventListener('input', (e) => {
+                    this.filterProducts(e.target.value);
+                });
+                
+                // 分类筛选
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                filterButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        filterButtons.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentCategory = btn.dataset.category;
+                        this.filterProducts(searchInput.value);
+                    });
+                });
+            }
+            
+            filterProducts(searchText = '') {
+                let filtered = this.phones;
+                
+                // 分类筛选
+                if (this.currentCategory !== 'all') {
+                    filtered = filtered.filter(phone => phone.brand === this.currentCategory);
+                }
+                
+                // 搜索筛选
+                if (searchText) {
+                    const text = searchText.toLowerCase();
+                    filtered = filtered.filter(phone => 
+                        phone.name.toLowerCase().includes(text)
+                    );
+                }
+                
+                this.filteredPhones = filtered;
+                this.render();
             }
             
             render() {
-                const grid = document.getElementById('phoneGrid');
+                const table = document.getElementById('priceTable');
                 
                 if (this.filteredPhones.length === 0) {
-                    grid.innerHTML = '<div class="error-message">暂无手机数据，请检查表格格式或添加数据</div>';
+                    table.innerHTML = '<div class="error-message">未找到相关手机，请检查表格数据</div>';
                     return;
                 }
                 
-                grid.innerHTML = this.filteredPhones.map(phone => `
-                    <div class="phone-card ${phone.isHot ? 'hot' : ''}">
-                        <div class="phone-image">📱</div>
-                        <div class="phone-model">${phone.model}</div>
-                        <div class="phone-storage">${phone.storage}</div>
-                        <div class="phone-price">¥${phone.price}</div>
-                        <div class="price-change ${this.getChangeClass(phone.change)}">
-                            ${this.getChangeText(phone.change)}
-                        </div>
-                        <div class="phone-status ${phone.status === '有货' ? 'in-stock' : 'out-stock'}">
-                            ${phone.status}
-                        </div>
+                // 按品牌分组
+                const brands = {};
+                this.filteredPhones.forEach(phone => {
+                    if (!brands[phone.brand]) {
+                        brands[phone.brand] = [];
+                    }
+                    brands[phone.brand].push(phone);
+                });
+                
+                // 品牌显示顺序
+                const brandOrder = ['apple', 'xiaomi', 'huawei', 'samsung', 'oppo', 'vivo', 'other'];
+                const brandNames = {
+                    'apple': '苹果',
+                    'xiaomi': '小米',
+                    'huawei': '华为',
+                    'samsung': '三星',
+                    'oppo': 'OPPO',
+                    'vivo': 'VIVO',
+                    'other': '其他'
+                };
+                
+                let html = `
+                    <div class="table-header">
+                        <div>商品名称</div>
+                        <div>价格</div>
+                        <div>库存</div>
+                        <div>操作</div>
                     </div>
-                `).join('');
+                `;
+                
+                brandOrder.forEach(brand => {
+                    if (brands[brand] && brands[brand].length > 0) {
+                        html += `<div class="brand-section">
+                            <div class="brand-title">${brandNames[brand]}</div>`;
+                        
+                        brands[brand].forEach(phone => {
+                            html += this.renderPhoneRow(phone);
+                        });
+                        
+                        html += `</div>`;
+                    }
+                });
+                
+                table.innerHTML = html;
                 
                 // 更新显示时间
                 document.getElementById('updateTime').textContent = new Date().toLocaleString('zh-CN');
             }
             
-            getChangeClass(change) {
-                if (change > 0) return 'price-up';
-                if (change < 0) return 'price-down';
-                return 'price-stable';
-            }
-            
-            getChangeText(change) {
-                if (change > 0) return `↑${change}`;
-                if (change < 0) return `↓${Math.abs(change)}`;
-                return '持平';
-            }
-            
-            filterProducts() {
-                const searchText = document.getElementById('searchInput').value.toLowerCase();
+            renderPhoneRow(phone) {
+                const tagsHtml = phone.tags.map(tag => {
+                    let className = 'tag';
+                    if (tag === '新') className += ' tag-new';
+                    else if (tag === '盒损') className += ' tag-damage';
+                    else if (tag === '热销') className += ' tag-hot';
+                    
+                    return `<span class="${className}">${tag}</span>`;
+                }).join('');
                 
-                if (!searchText) {
-                    this.filteredPhones = [...this.phones];
-                } else {
-                    this.filteredPhones = this.phones.filter(phone => 
-                        phone.model.toLowerCase().includes(searchText) ||
-                        phone.storage.toLowerCase().includes(searchText)
-                    );
-                }
+                const stockText = phone.stock > 0 ? `${phone.stock} 件` : '缺货';
+                const stockClass = phone.stock > 0 ? '' : 'out-of-stock';
                 
-                this.render();
+                return `
+                    <div class="phone-row">
+                        <div class="phone-name">
+                            ${tagsHtml}
+                            ${phone.name}
+                        </div>
+                        <div class="phone-price">¥ ${phone.price}</div>
+                        <div class="phone-stock ${stockClass}">${stockText}</div>
+                        <div>
+                            ${phone.stock > 0 ? 
+                                '<button class="buy-btn">购买</button>' : 
+                                '<button class="buy-btn" disabled style="background:#95a5a6;">缺货</button>'
+                            }
+                        </div>
+                    </div>
+                `;
             }
             
             showLoading() {
-                const grid = document.getElementById('phoneGrid');
-                grid.innerHTML = '<div class="loading">正在从 Google Sheets 加载最新报价...</div>';
+                const table = document.getElementById('priceTable');
+                table.innerHTML = '<div class="loading">正在加载报价...</div>';
             }
             
             showError(message) {
-                const grid = document.getElementById('phoneGrid');
-                grid.innerHTML = `<div class="error-message">${message}</div>`;
+                const table = document.getElementById('priceTable');
+                table.innerHTML = `<div class="error-message">${message}</div>`;
             }
             
             updateLocalStorage() {
@@ -483,9 +581,30 @@
             
             showExampleData() {
                 this.phones = [
-                    { model: "iPhone 15", storage: "128G", price: 5999, change: -200, status: "有货", isHot: true },
-                    { model: "iPhone 15", storage: "256G", price: 6999, change: 100, status: "有货", isHot: true },
-                    { model: "小米14", storage: "256G", price: 4599, change: 0, status: "有货", isHot: true }
+                    { 
+                        id: 1, 
+                        brand: 'apple',
+                        name: '盒损-苹果16Pro-Max(3297)-1TB黑色钛金属(TY3-XW3)', 
+                        price: 11800, 
+                        stock: 1,
+                        tags: ['盒损']
+                    },
+                    { 
+                        id: 2, 
+                        brand: 'apple',
+                        name: '盒损-苹果16Pro(3294)-512G原色钛金属(M43-QM3)', 
+                        price: 8950, 
+                        stock: 1,
+                        tags: ['盒损']
+                    },
+                    { 
+                        id: 3, 
+                        brand: 'apple',
+                        name: '盒损-苹果17(3521)-256G青雾蓝色(6Y4-794)', 
+                        price: 5900, 
+                        stock: 1,
+                        tags: ['盒损', '新']
+                    }
                 ];
                 this.filteredPhones = [...this.phones];
                 this.render();
