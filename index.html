@@ -263,11 +263,11 @@
     </div>
 
     <script>
-        // 手机价格管理器
+        // 手机价格管理器 - 使用CSV格式
         class PriceManager {
             constructor() {
-                // 🔧 重要：在这里设置你的 Google Sheets ID
-                this.sheetId = '1YOUR_SHEET_ID_HERE'; // 替换为你的实际表格ID
+                // 使用你提供的CSV链接
+                this.csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvXbm5kD_vT11nLjJf42Sk3kX3dWySW64331nYnRFp5cQl6tP3JKWx-5XKsPHLWOS3TTnf7nJL47CB/pub?output=csv';
                 this.phones = [];
                 this.filteredPhones = [];
                 this.init();
@@ -283,28 +283,15 @@
                 try {
                     this.showLoading();
                     
-                    // 从 Google Sheets 获取数据
-                    const url = `https://docs.google.com/spreadsheets/d/${this.sheetId}/gviz/tq?tqx=out:json`;
-                    const response = await fetch(url);
+                    // 直接获取CSV数据
+                    const response = await fetch(this.csvUrl);
                     
                     if (!response.ok) {
                         throw new Error('网络请求失败');
                     }
                     
-                    const text = await response.text();
-                    const json = JSON.parse(text.substring(47).slice(0, -2));
-                    
-                    // 处理数据
-                    this.phones = json.table.rows.map(row => ({
-                        model: row.c[0]?.v || '',
-                        storage: row.c[1]?.v || '',
-                        price: row.c[2]?.v || 0,
-                        change: row.c[3]?.v || 0,
-                        status: row.c[4]?.v || '有货',
-                        isHot: row.c[5]?.v === '是'
-                    }));
-                    
-                    this.filteredPhones = [...this.phones];
+                    const csvText = await response.text();
+                    this.parseCSVData(csvText);
                     this.render();
                     this.updateLocalStorage();
                     
@@ -315,11 +302,88 @@
                 }
             }
             
+            parseCSVData(csvText) {
+                const lines = csvText.split('\n').filter(line => line.trim() !== '');
+                this.phones = [];
+                
+                // 假设第一行是表头，从第二行开始解析数据
+                for (let i = 1; i < lines.length; i++) {
+                    const cells = this.parseCSVLine(lines[i]);
+                    
+                    if (cells.length >= 3) {
+                        const phone = {
+                            model: cells[0]?.trim() || '',
+                            storage: cells[1]?.trim() || '',
+                            price: this.parsePrice(cells[2]),
+                            change: cells[3] ? this.parseChange(cells[3]) : 0,
+                            status: cells[4] ? cells[4].trim() : '有货',
+                            isHot: cells[5] ? cells[5].trim() === '是' : false
+                        };
+                        
+                        // 只添加有有效数据的行
+                        if (phone.model && phone.price > 0) {
+                            this.phones.push(phone);
+                        }
+                    }
+                }
+                
+                this.filteredPhones = [...this.phones];
+            }
+            
+            parseCSVLine(line) {
+                // 简单的CSV解析，处理逗号分隔的值
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current);
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                
+                result.push(current);
+                return result;
+            }
+            
+            parsePrice(priceText) {
+                if (!priceText) return 0;
+                // 提取数字，移除货币符号等非数字字符
+                const match = priceText.toString().match(/(\d+(\.\d+)?)/);
+                return match ? parseFloat(match[1]) : 0;
+            }
+            
+            parseChange(changeText) {
+                if (!changeText) return 0;
+                
+                const text = changeText.toString().trim();
+                
+                // 解析价格变化，支持 ↑100, ↓200, 平 等格式
+                if (text.includes('↑')) {
+                    return parseInt(text.replace('↑', '')) || 0;
+                } else if (text.includes('↓')) {
+                    return -parseInt(text.replace('↓', '')) || 0;
+                } else if (text === '平' || text === '持平') {
+                    return 0;
+                }
+                
+                // 直接尝试解析数字
+                const num = parseInt(text);
+                return isNaN(num) ? 0 : num;
+            }
+            
             render() {
                 const grid = document.getElementById('phoneGrid');
                 
                 if (this.filteredPhones.length === 0) {
-                    grid.innerHTML = '<div class="error-message">未找到相关手机</div>';
+                    grid.innerHTML = '<div class="error-message">暂无手机数据，请检查表格格式</div>';
                     return;
                 }
                 
@@ -396,22 +460,14 @@
                     
                     const time = new Date(timestamp).toLocaleString('zh-CN');
                     document.getElementById('updateTime').textContent = `${time} (缓存)`;
+                } else {
+                    this.showError('无法加载价格数据，请检查网络连接或表格格式');
                 }
             }
         }
         
         // 创建全局实例
         const priceManager = new PriceManager();
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 确保页面完全加载后再显示内容
-            setTimeout(() => {
-                if (priceManager.phones.length === 0) {
-                    priceManager.useCachedData();
-                }
-            }, 1000);
-        });
     </script>
 </body>
 </html>
