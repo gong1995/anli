@@ -1,1 +1,101 @@
 
+# convert.py - Excel转JSON
+import pandas as pd
+import json
+import os
+from datetime import datetime
+
+def convert_excel_to_json():
+    # 读取Excel文件
+    excel_file = "手机价格表.xlsx"
+    json_file = "data/prices.json"
+    
+    if not os.path.exists(excel_file):
+        print("Excel文件不存在，创建示例文件...")
+        create_sample_excel()
+        return
+    
+    try:
+        df = pd.read_excel(excel_file)
+        
+        data = {
+            "lastUpdate": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "phones": []
+        }
+        
+        for index, row in df.iterrows():
+            # 自动识别品牌
+            brand = detect_brand(str(row['型号']))
+            
+            phone = {
+                "id": index + 1,
+                "brand": brand,
+                "name": str(row['型号']),
+                "price": int(row['价格']),
+                "stock": int(row['库存']),
+                "tags": detect_tags(str(row['型号']))
+            }
+            data["phones"].append(phone)
+        
+        # 确保data目录存在
+        os.makedirs("data", exist_ok=True)
+        
+        # 保存JSON文件
+        with open(json_file, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        print("✅ 转换成功！")
+        print(f"📊 共转换 {len(data['phones'])} 条数据")
+        print(f"⏰ 更新时间: {data['lastUpdate']}")
+        
+    except Exception as e:
+        print(f"❌ 转换失败: {e}")
+
+def detect_brand(name):
+    name_lower = name.lower()
+    if '苹果' in name_lower or 'iphone' in name_lower:
+        return 'apple'
+    elif '小米' in name_lower:
+        return 'xiaomi'
+    elif '华为' in name_lower:
+        return 'huawei'
+    elif '三星' in name_lower:
+        return 'samsung'
+    elif 'oppo' in name_lower:
+        return 'oppo'
+    elif 'vivo' in name_lower:
+        return 'vivo'
+    else:
+        return 'other'
+
+def detect_tags(name):
+    tags = []
+    name_lower = name.lower()
+    if '新' in name_lower:
+        tags.append('新')
+    if '盒损' in name_lower:
+        tags.append('盒损')
+    if '热销' in name_lower:
+        tags.append('热销')
+    return tags
+
+def create_sample_excel():
+    """创建示例Excel文件"""
+    sample_data = {
+        '型号': [
+            '盒损-苹果16Pro-Max-1TB黑色钛金属',
+            '盒损-苹果16Pro-512G原色钛金属', 
+            '小米14-12GB+256GB黑色',
+            '华为Mate 60 Pro-12GB+512GB雅川青'
+        ],
+        '价格': [11800, 8950, 3999, 6999],
+        '库存': [1, 1, 5, 2]
+    }
+    
+    df = pd.DataFrame(sample_data)
+    df.to_excel("手机价格表.xlsx", index=False)
+    print("📝 已创建示例Excel文件：手机价格表.xlsx")
+    print("💡 请在此文件中填写实际价格数据，然后重新运行此脚本")
+
+if __name__ == "__main__":
+    convert_excel_to_json()
