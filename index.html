@@ -199,6 +199,36 @@
             margin-top: 15px;
             color: #7f8c8d;
             font-size: 14px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .refresh-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .error-message {
+            text-align: center;
+            padding: 40px;
+            color: #e74c3c;
+            background: white;
+            border-radius: 8px;
+            margin: 10px 0;
         }
         
         /* 移动端优化 */
@@ -289,14 +319,17 @@
         </div>
         
         <div class="update-info">
-            <div>最后更新: <span id="updateTime">2024-01-15</span></div>
+            <div>最后更新: <span id="updateTime">加载中...</span></div>
+            <button class="refresh-btn" onclick="priceManager.loadData()">🔄 刷新价格</button>
         </div>
     </div>
 
     <script>
-        // 手机价格管理器 - 静态数据版本
+        // 手机价格管理器 - 使用 CSV 链接动态获取数据
         class PriceManager {
             constructor() {
+                // 使用你提供的 CSV 链接
+                this.csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvXbm5kD_vT11nLjJf42Sk3kX3dWySW64331nYnRFp5cQI6tP3JKWx-5XKsPHLWOS3TTnf7nJL47CB/pub?output=csv';
                 this.phones = [];
                 this.filteredPhones = [];
                 this.currentCategory = 'all';
@@ -304,148 +337,145 @@
             }
             
             init() {
+                // 先尝试使用缓存数据快速显示
+                if (this.useCachedData(true)) {
+                    console.log('使用缓存数据快速显示');
+                }
+                
+                // 然后尝试加载最新数据
                 this.loadData();
                 this.setupEventListeners();
+                
+                // 每30分钟自动更新一次
+                setInterval(() => this.loadData(), 30 * 60 * 1000);
             }
             
-            loadData() {
-                // 静态手机价格数据 - 在这里修改价格
-                this.phones = [
-                    // 苹果品牌
-                    { 
-                        id: 1, 
-                        brand: 'apple',
-                        name: '盒损-苹果16Pro-Max(3297)-1TB黑色钛金属(TY3-XW3)', 
-                        price: 11800, 
-                        stock: 1,
-                        tags: ['盒损']
-                    },
-                    { 
-                        id: 2, 
-                        brand: 'apple',
-                        name: '盒损-苹果16Pro(3294)-512G原色钛金属(M43-QM3)', 
-                        price: 8950, 
-                        stock: 1,
-                        tags: ['盒损']
-                    },
-                    { 
-                        id: 3, 
-                        brand: 'apple',
-                        name: '盒损-苹果17(3521)-256G青雾蓝色(6Y4-794)', 
-                        price: 5900, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    },
-                    { 
-                        id: 4, 
-                        brand: 'apple',
-                        name: '盒损-苹果17Pro-Max(3527)-256G星宇橙色(044-0V4)', 
-                        price: 9740, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    },
-                    { 
-                        id: 5, 
-                        brand: 'apple',
-                        name: '盒损-苹果17Pro(3524)-256G深蓝色(8V4-954)', 
-                        price: 8550, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    },
-                    { 
-                        id: 6, 
-                        brand: 'apple',
-                        name: '盒损-苹果17Pro(3524)-512G银色(8W4-964)', 
-                        price: 10600, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    },
-                    { 
-                        id: 7, 
-                        brand: 'apple',
-                        name: '盒损-苹果17Pro(3524)-512G星宇橙色(8X4-974)', 
-                        price: 10650, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    },
-                    { 
-                        id: 8, 
-                        brand: 'apple',
-                        name: '盒损-苹果17Pro(3524)-512G深蓝色', 
-                        price: 10600, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    },
+            async loadData() {
+                try {
+                    console.log('正在从 Google Sheets 获取数据...');
                     
-                    // 小米品牌
-                    { 
-                        id: 9, 
-                        brand: 'xiaomi',
-                        name: '小米14-12GB+256GB黑色', 
-                        price: 3999, 
-                        stock: 5,
-                        tags: ['热销']
-                    },
-                    { 
-                        id: 10, 
-                        brand: 'xiaomi',
-                        name: '小米14 Pro-12GB+512GB白色', 
-                        price: 4999, 
-                        stock: 3,
-                        tags: ['新']
-                    },
+                    // 添加超时控制
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
                     
-                    // 华为品牌
-                    { 
-                        id: 11, 
-                        brand: 'huawei',
-                        name: '华为Mate 60 Pro-12GB+512GB雅川青', 
-                        price: 6999, 
-                        stock: 2,
-                        tags: ['热销']
-                    },
-                    { 
-                        id: 12, 
-                        brand: 'huawei',
-                        name: '华为P60-8GB+256GB羽砂紫', 
-                        price: 4888, 
-                        stock: 0,
-                        tags: []
-                    },
+                    // 添加时间戳参数避免缓存
+                    const url = this.csvUrl + '&t=' + Date.now();
+                    const response = await fetch(url, { 
+                        signal: controller.signal 
+                    });
                     
-                    // 三星品牌
-                    { 
-                        id: 13, 
-                        brand: 'samsung',
-                        name: '三星S24 Ultra-12GB+512GB水墨黑', 
-                        price: 9699, 
-                        stock: 4,
-                        tags: ['新']
-                    },
+                    clearTimeout(timeoutId);
                     
-                    // OPPO品牌
-                    { 
-                        id: 14, 
-                        brand: 'oppo',
-                        name: 'OPPO Find X7-12GB+256GB黑色', 
-                        price: 3999, 
-                        stock: 6,
-                        tags: []
-                    },
-                    
-                    // VIVO品牌
-                    { 
-                        id: 15, 
-                        brand: 'vivo',
-                        name: 'vivo X100-12GB+256GB蓝色', 
-                        price: 4299, 
-                        stock: 3,
-                        tags: ['热销']
+                    if (!response.ok) {
+                        throw new Error('网络请求失败: ' + response.status);
                     }
-                ];
+                    
+                    const csvText = await response.text();
+                    console.log('获取到的 CSV 数据:', csvText);
+                    
+                    if (!csvText || csvText.trim() === '') {
+                        throw new Error('CSV 数据为空');
+                    }
+                    
+                    this.parseCSVData(csvText);
+                    this.render();
+                    this.updateLocalStorage();
+                    
+                } catch (error) {
+                    console.error('获取价格失败:', error);
+                    if (error.name === 'AbortError') {
+                        this.showError('请求超时，使用缓存数据');
+                    } else {
+                        this.showError('获取价格失败: ' + error.message + '，使用缓存数据');
+                    }
+                    // 确保使用缓存数据
+                    if (this.phones.length === 0) {
+                        this.useCachedData();
+                    }
+                }
+            }
+            
+            parseCSVData(csvText) {
+                const lines = csvText.split('\n').filter(line => line.trim() !== '');
+                this.phones = [];
+                
+                console.log('CSV 行数:', lines.length);
+                
+                // 从第一行开始解析数据（跳过空行）
+                for (let i = 0; i < lines.length; i++) {
+                    const cells = lines[i].split(',');
+                    
+                    // 跳过表头（如果第一行包含"型号"等表头文字）
+                    if (i === 0 && (cells[0].includes('型号') || cells[0].includes('model'))) {
+                        continue;
+                    }
+                    
+                    if (cells.length >= 3) {
+                        // 根据CSV列解析数据
+                        const phone = {
+                            id: i,
+                            name: cells[0]?.trim() || '',
+                            price: this.parsePrice(cells[1]),
+                            stock: cells[2] ? parseInt(cells[2]) || 1 : 1,
+                            tags: this.parseTags(cells[0]),
+                            brand: this.parseBrand(cells[0])
+                        };
+                        
+                        console.log('解析出的手机数据:', phone);
+                        
+                        // 只添加有有效数据的行
+                        if (phone.name && phone.price > 0) {
+                            this.phones.push(phone);
+                        }
+                    }
+                }
                 
                 this.filteredPhones = [...this.phones];
-                this.render();
+                console.log('最终手机数据:', this.phones);
+            }
+            
+            parsePrice(priceText) {
+                if (!priceText) return 0;
+                // 提取数字，移除货币符号等非数字字符
+                const match = priceText.toString().match(/(\d+(\.\d+)?)/);
+                return match ? parseFloat(match[1]) : 0;
+            }
+            
+            parseTags(name) {
+                const tags = [];
+                const nameLower = name.toLowerCase();
+                
+                if (nameLower.includes('新') || nameLower.includes('new')) {
+                    tags.push('新');
+                }
+                if (nameLower.includes('盒损') || nameLower.includes('damage')) {
+                    tags.push('盒损');
+                }
+                if (nameLower.includes('热销') || nameLower.includes('hot')) {
+                    tags.push('热销');
+                }
+                
+                return tags;
+            }
+            
+            parseBrand(name) {
+                const nameLower = name.toLowerCase();
+                
+                if (nameLower.includes('苹果') || nameLower.includes('iphone')) {
+                    return 'apple';
+                } else if (nameLower.includes('小米')) {
+                    return 'xiaomi';
+                } else if (nameLower.includes('华为')) {
+                    return 'huawei';
+                } else if (nameLower.includes('三星')) {
+                    return 'samsung';
+                } else if (nameLower.includes('oppo')) {
+                    return 'oppo';
+                } else if (nameLower.includes('vivo')) {
+                    return 'vivo';
+                } else {
+                    return 'other';
+                }
             }
             
             setupEventListeners() {
@@ -491,7 +521,7 @@
                 const table = document.getElementById('priceTable');
                 
                 if (this.filteredPhones.length === 0) {
-                    table.innerHTML = '<div class="error-message">未找到相关手机</div>';
+                    table.innerHTML = '<div class="error-message">未找到相关手机，请检查表格数据</div>';
                     return;
                 }
                 
@@ -505,14 +535,15 @@
                 });
                 
                 // 品牌显示顺序
-                const brandOrder = ['apple', 'xiaomi', 'huawei', 'samsung', 'oppo', 'vivo'];
+                const brandOrder = ['apple', 'xiaomi', 'huawei', 'samsung', 'oppo', 'vivo', 'other'];
                 const brandNames = {
                     'apple': '苹果',
                     'xiaomi': '小米',
                     'huawei': '华为',
                     'samsung': '三星',
                     'oppo': 'OPPO',
-                    'vivo': 'VIVO'
+                    'vivo': 'VIVO',
+                    'other': '其他'
                 };
                 
                 let html = `
@@ -573,15 +604,81 @@
                     </div>
                 `;
             }
+            
+            showLoading() {
+                const table = document.getElementById('priceTable');
+                table.innerHTML = '<div class="loading">正在加载报价...</div>';
+            }
+            
+            showError(message) {
+                const table = document.getElementById('priceTable');
+                table.innerHTML = `<div class="error-message">${message}</div>`;
+            }
+            
+            updateLocalStorage() {
+                localStorage.setItem('phonePrices', JSON.stringify({
+                    data: this.phones,
+                    timestamp: Date.now()
+                }));
+            }
+            
+            useCachedData(silent = false) {
+                const cached = localStorage.getItem('phonePrices');
+                if (cached) {
+                    const { data, timestamp } = JSON.parse(cached);
+                    this.phones = data;
+                    this.filteredPhones = [...data];
+                    if (!silent) {
+                        this.render();
+                        const time = new Date(timestamp).toLocaleString('zh-CN');
+                        document.getElementById('updateTime').textContent = `${time} (缓存)`;
+                    }
+                    return true;
+                } else {
+                    if (!silent) {
+                        // 如果没有缓存数据，显示示例数据
+                        this.showExampleData();
+                    }
+                    return false;
+                }
+            }
+            
+            showExampleData() {
+                this.phones = [
+                    { 
+                        id: 1, 
+                        brand: 'apple',
+                        name: '盒损-苹果16Pro-Max(3297)-1TB黑色钛金属(TY3-XW3)', 
+                        price: 11800, 
+                        stock: 1,
+                        tags: ['盒损']
+                    },
+                    { 
+                        id: 2, 
+                        brand: 'apple',
+                        name: '盒损-苹果16Pro(3294)-512G原色钛金属(M43-QM3)', 
+                        price: 8950, 
+                        stock: 1,
+                        tags: ['盒损']
+                    },
+                    { 
+                        id: 3, 
+                        brand: 'apple',
+                        name: '盒损-苹果17(3521)-256G青雾蓝色(6Y4-794)', 
+                        price: 5900, 
+                        stock: 1,
+                        tags: ['盒损', '新']
+                    }
+                ];
+                this.filteredPhones = [...this.phones];
+                this.render();
+                
+                document.getElementById('updateTime').textContent = '示例数据 - 请检查表格链接和数据';
+            }
         }
         
         // 创建全局实例
         const priceManager = new PriceManager();
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            priceManager.loadData();
-        });
     </script>
 </body>
 </html>
