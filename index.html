@@ -3,682 +3,452 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今日手机报价</title>
+    <title>唯诚手机订货平台</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            font-family: "PingFang SC", "Helvetica Neue", Arial, sans-serif;
         }
         
         body {
             background-color: #f5f5f5;
             color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 15px;
-        }
-        
-        .header {
-            background: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .header h1 {
-            color: #e74c3c;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        
-        .header .subtitle {
-            color: #7f8c8d;
+            line-height: 1.5;
+            padding: 0;
+            margin: 0;
             font-size: 14px;
         }
         
-        .search-box {
-            background: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 15px;
+        .container {
+            max-width: 100%;
+            padding: 10px;
         }
         
-        .search-input {
-            width: 100%;
-            padding: 12px 15px;
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #fff;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .domain {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .search-bar {
+            display: flex;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar input {
+            flex: 1;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 16px;
-            outline: none;
-        }
-        
-        .search-input:focus {
-            border-color: #3498db;
+            padding: 8px 10px;
+            font-size: 14px;
         }
         
         .filters {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            justify-content: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
         }
         
-        .filter-btn {
-            padding: 8px 15px;
-            background: white;
-            border: 1px solid #ddd;
+        .filter-item {
+            background-color: #fff;
+            padding: 8px 12px;
             border-radius: 4px;
-            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            flex: 1;
+            margin: 0 5px;
+            text-align: center;
+        }
+        
+        .filter-item:first-child {
+            margin-left: 0;
+        }
+        
+        .filter-item:last-child {
+            margin-right: 0;
+        }
+        
+        .coupon-banner {
+            background-color: #e8f4ff;
+            border: 1px dashed #4a90e2;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            margin-bottom: 15px;
             font-size: 14px;
         }
         
-        .filter-btn.active {
-            background: #3498db;
-            color: white;
-            border-color: #3498db;
+        .coupon-banner a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .product-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .product-list {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-info {
+            flex: 1;
+        }
+        
+        .product-name {
+            font-size: 14px;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        
+        .product-details {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .product-price {
+            font-size: 15px;
+            font-weight: bold;
+            color: #e74c3c;
+            white-space: nowrap;
+            margin-left: 10px;
+            text-align: right;
+        }
+        
+        .online-price {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .price-diff {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+        
+        .price-diff.positive {
+            color: #27ae60;
+        }
+        
+        .price-diff.negative {
+            color: #e74c3c;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-size: 12px;
+        }
+        
+        .note {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+            text-align: center;
+        }
+        
+        .table-section {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .table-container {
+            overflow-x: auto;
         }
         
         .price-table {
-            background: white;
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        
+        .price-table th, .price-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .price-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .price-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .price-highlight {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 15px;
+            background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
         
-        .table-header {
-            background: #f8f9fa;
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            font-weight: bold;
-            display: grid;
-            grid-template-columns: 3fr 1fr 1fr 1fr;
-            gap: 10px;
-        }
-        
-        .phone-row {
-            display: grid;
-            grid-template-columns: 3fr 1fr 1fr 1fr;
-            gap: 10px;
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            align-items: center;
-        }
-        
-        .phone-row:hover {
-            background: #f8f9fa;
-        }
-        
-        .phone-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        
-        .tag {
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 12px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-        
-        .tag-new {
-            background: #ffeb3b;
-            color: #333;
-        }
-        
-        .tag-damage {
-            background: #ff9800;
-            color: white;
-        }
-        
-        .tag-hot {
-            background: #e74c3c;
-            color: white;
-        }
-        
-        .phone-price {
-            color: #e74c3c;
-            font-weight: bold;
-            font-size: 16px;
-            white-space: nowrap;
-        }
-        
-        .phone-stock {
+        .tab {
+            flex: 1;
+            padding: 12px;
             text-align: center;
-            color: #7f8c8d;
-            white-space: nowrap;
-        }
-        
-        .buy-btn {
-            background: #e74c3c;
-            color: white;
+            background-color: #f8f9fa;
             border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s;
-            white-space: nowrap;
-        }
-        
-        .buy-btn:hover {
-            background: #c0392b;
-        }
-        
-        .buy-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-        }
-        
-        .brand-section {
-            margin-bottom: 5px;
-        }
-        
-        .brand-title {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            font-weight: bold;
-            border-bottom: 1px solid #eee;
-            color: #2c3e50;
-        }
-        
-        .update-info {
-            text-align: center;
-            margin-top: 15px;
-            color: #7f8c8d;
             font-size: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .refresh-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
+            transition: background-color 0.3s;
         }
         
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
+        .tab.active {
+            background-color: #4a90e2;
+            color: white;
         }
         
-        .error-message {
-            text-align: center;
-            padding: 40px;
-            color: #e74c3c;
-            background: white;
-            border-radius: 8px;
-            margin: 10px 0;
+        .content-section {
+            display: none;
         }
         
-        /* 移动端优化 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .table-header, .phone-row {
-                grid-template-columns: 2fr 1fr 1fr 1fr;
-                gap: 8px;
-                padding: 10px;
-            }
-            
-            .phone-name {
-                font-size: 14px;
-            }
-            
-            .phone-price {
-                font-size: 14px;
-            }
-            
-            .buy-btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-            
-            .filters {
-                gap: 5px;
-            }
-            
-            .filter-btn {
-                padding: 6px 10px;
-                font-size: 12px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .table-header, .phone-row {
-                grid-template-columns: 1fr;
-                gap: 5px;
-            }
-            
-            .table-header {
-                display: none;
-            }
-            
-            .phone-row {
-                border: 1px solid #eee;
-                border-radius: 6px;
-                margin-bottom: 10px;
-                padding: 15px;
-            }
-            
-            .buy-btn {
-                width: 100%;
-            }
-            
-            .header h1 {
-                font-size: 20px;
-            }
+        .content-section.active {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>今日手机报价</h1>
-            <div class="subtitle">36610.139erp.com - 实时更新</div>
+            <h1>商品报价</h1>
+            <div class="domain">www.wcdhw.cn</div>
         </div>
         
-        <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="🔍 请输入关键字">
+        <div class="search-bar">
+            <input type="text" placeholder="搜索商品">
         </div>
         
         <div class="filters">
-            <button class="filter-btn active" data-category="all">全部分类</button>
-            <button class="filter-btn" data-category="apple">苹果</button>
-            <button class="filter-btn" data-category="xiaomi">小米</button>
-            <button class="filter-btn" data-category="huawei">华为</button>
-            <button class="filter-btn" data-category="samsung">三星</button>
-            <button class="filter-btn" data-category="oppo">OPPO</button>
-            <button class="filter-btn" data-category="vivo">VIVO</button>
+            <div class="filter-item">分类▼</div>
+            <div class="filter-item">标签▼</div>
+            <div class="filter-item">品牌▼</div>
+            <div class="filter-item">筛选</div>
         </div>
         
-        <div class="price-table" id="priceTable">
-            <div class="loading">正在加载报价...</div>
+        <div class="coupon-banner">
+            <a href="#">唯诚手机订货券点这里→→</a>
         </div>
         
-        <div class="update-info">
-            <div>最后更新: <span id="updateTime">加载中...</span></div>
-            <button class="refresh-btn" onclick="priceManager.loadData()">🔄 刷新价格</button>
+        <div class="tab-container">
+            <button class="tab active" onclick="switchTab('list')">商品列表</button>
+            <button class="tab" onclick="switchTab('table')">价格对比表</button>
         </div>
+        
+        <div id="list-content" class="content-section active">
+            <div class="product-section">
+                <div class="section-title">苹果全系</div>
+                <div class="product-list">
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">苹果16Promax 512G 原色 TX3-XV3</div>
+                            <div class="product-details">省内 <span class="warning">怕查 禁 止供线上</span></div>
+                            <div class="online-price">在线表格价格: ￥10,200.00</div>
+                            <div class="price-diff negative">差价: -￥50.00</div>
+                        </div>
+                        <div class="product-price">￥10,150.00</div>
+                    </div>
+                    
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">苹果16Promax 512G 沙漠金 TW3-XU3</div>
+                            <div class="product-details">省内 <span class="warning">怕查 禁 止供线上</span></div>
+                            <div class="online-price">在线表格价格: ￥9,850.00</div>
+                            <div class="price-diff negative">差价: -￥50.00</div>
+                        </div>
+                        <div class="product-price">￥9,800.00</div>
+                    </div>
+                    
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">苹果16Promax 512G 黑色 TR3-XR3</div>
+                            <div class="product-details">省内 <span class="warning">怕查 禁止供线上</span></div>
+                            <div class="online-price">在线表格价格: ￥9,950.00</div>
+                            <div class="price-diff negative">差价: -￥50.00</div>
+                        </div>
+                        <div class="product-price">￥9,900.00</div>
+                    </div>
+                    
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">苹果16Promax 512G 白色 TT3-XT3</div>
+                            <div class="product-details">省内 <span class="warning">怕查 禁 止供线上</span></div>
+                            <div class="online-price">在线表格价格: ￥10,300.00</div>
+                            <div class="price-diff negative">差价: -￥50.00</div>
+                        </div>
+                        <div class="product-price">￥10,250.00</div>
+                    </div>
+                    
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">苹果16Promax 256G 原色 TQ3-XQ3</div>
+                            <div class="product-details">省内 <span class="warning">怕查 禁止供线上</span></div>
+                            <div class="online-price">在线表格价格: ￥9,100.00</div>
+                            <div class="price-diff negative">差价: -￥50.00</div>
+                        </div>
+                        <div class="product-price">￥9,050.00</div>
+                    </div>
+                    
+                    <div class="product-item">
+                        <div class="product-info">
+                            <div class="product-name">苹果16Promax 256G 沙漠金 TP3-XP3</div>
+                            <div class="product-details">省内 <span class="warning">怕查 禁 止供线上</span></div>
+                            <div class="online-price">在线表格价格: ￥9,100.00</div>
+                            <div class="price-diff negative">差价: -￥50.00</div>
+                        </div>
+                        <div class="product-price">￥9,050.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="table-content" class="content-section">
+            <div class="table-section">
+                <div class="section-title">价格对比表</div>
+                <div class="table-container">
+                    <table class="price-table">
+                        <thead>
+                            <tr>
+                                <th>型号</th>
+                                <th>颜色</th>
+                                <th>规格</th>
+                                <th>本站价格</th>
+                                <th>在线表格价格</th>
+                                <th>差价</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>苹果16Promax</td>
+                                <td>原色</td>
+                                <td>512G</td>
+                                <td class="price-highlight">￥10,150.00</td>
+                                <td>￥10,200.00</td>
+                                <td class="price-diff negative">-￥50.00</td>
+                            </tr>
+                            <tr>
+                                <td>苹果16Promax</td>
+                                <td>沙漠金</td>
+                                <td>512G</td>
+                                <td class="price-highlight">￥9,800.00</td>
+                                <td>￥9,850.00</td>
+                                <td class="price-diff negative">-￥50.00</td>
+                            </tr>
+                            <tr>
+                                <td>苹果16Promax</td>
+                                <td>黑色</td>
+                                <td>512G</td>
+                                <td class="price-highlight">￥9,900.00</td>
+                                <td>￥9,950.00</td>
+                                <td class="price-diff negative">-￥50.00</td>
+                            </tr>
+                            <tr>
+                                <td>苹果16Promax</td>
+                                <td>白色</td>
+                                <td>512G</td>
+                                <td class="price-highlight">￥10,250.00</td>
+                                <td>￥10,300.00</td>
+                                <td class="price-diff negative">-￥50.00</td>
+                            </tr>
+                            <tr>
+                                <td>苹果16Promax</td>
+                                <td>原色</td>
+                                <td>256G</td>
+                                <td class="price-highlight">￥9,050.00</td>
+                                <td>￥9,100.00</td>
+                                <td class="price-diff negative">-￥50.00</td>
+                            </tr>
+                            <tr>
+                                <td>苹果16Promax</td>
+                                <td>沙漠金</td>
+                                <td>256G</td>
+                                <td class="price-highlight">￥9,050.00</td>
+                                <td>￥9,100.00</td>
+                                <td class="price-diff negative">-￥50.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">价格仅供参考，具体以实际交易为准</div>
     </div>
 
     <script>
-        // 手机价格管理器 - 使用 CSV 链接动态获取数据
-        class PriceManager {
-            constructor() {
-                // 使用你提供的 CSV 链接
-                this.csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQvXbm5kD_vT11nLjJf42Sk3kX3dWySW64331nYnRFp5cQI6tP3JKWx-5XKsPHLWOS3TTnf7nJL47CB/pub?output=csv';
-                this.phones = [];
-                this.filteredPhones = [];
-                this.currentCategory = 'all';
-                this.init();
-            }
+        function switchTab(tabName) {
+            // 隐藏所有内容区域
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
             
-            init() {
-                // 先尝试使用缓存数据快速显示
-                if (this.useCachedData(true)) {
-                    console.log('使用缓存数据快速显示');
-                }
-                
-                // 然后尝试加载最新数据
-                this.loadData();
-                this.setupEventListeners();
-                
-                // 每30分钟自动更新一次
-                setInterval(() => this.loadData(), 30 * 60 * 1000);
-            }
+            // 移除所有标签的激活状态
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
             
-            async loadData() {
-                try {
-                    console.log('正在从 Google Sheets 获取数据...');
-                    
-                    // 添加超时控制
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10秒超时
-                    
-                    // 添加时间戳参数避免缓存
-                    const url = this.csvUrl + '&t=' + Date.now();
-                    const response = await fetch(url, { 
-                        signal: controller.signal 
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) {
-                        throw new Error('网络请求失败: ' + response.status);
-                    }
-                    
-                    const csvText = await response.text();
-                    console.log('获取到的 CSV 数据:', csvText);
-                    
-                    if (!csvText || csvText.trim() === '') {
-                        throw new Error('CSV 数据为空');
-                    }
-                    
-                    this.parseCSVData(csvText);
-                    this.render();
-                    this.updateLocalStorage();
-                    
-                } catch (error) {
-                    console.error('获取价格失败:', error);
-                    if (error.name === 'AbortError') {
-                        this.showError('请求超时，使用缓存数据');
-                    } else {
-                        this.showError('获取价格失败: ' + error.message + '，使用缓存数据');
-                    }
-                    // 确保使用缓存数据
-                    if (this.phones.length === 0) {
-                        this.useCachedData();
-                    }
-                }
-            }
+            // 显示选中的内容区域
+            document.getElementById(tabName + '-content').classList.add('active');
             
-            parseCSVData(csvText) {
-                const lines = csvText.split('\n').filter(line => line.trim() !== '');
-                this.phones = [];
-                
-                console.log('CSV 行数:', lines.length);
-                
-                // 从第一行开始解析数据（跳过空行）
-                for (let i = 0; i < lines.length; i++) {
-                    const cells = lines[i].split(',');
-                    
-                    // 跳过表头（如果第一行包含"型号"等表头文字）
-                    if (i === 0 && (cells[0].includes('型号') || cells[0].includes('model'))) {
-                        continue;
-                    }
-                    
-                    if (cells.length >= 3) {
-                        // 根据CSV列解析数据
-                        const phone = {
-                            id: i,
-                            name: cells[0]?.trim() || '',
-                            price: this.parsePrice(cells[1]),
-                            stock: cells[2] ? parseInt(cells[2]) || 1 : 1,
-                            tags: this.parseTags(cells[0]),
-                            brand: this.parseBrand(cells[0])
-                        };
-                        
-                        console.log('解析出的手机数据:', phone);
-                        
-                        // 只添加有有效数据的行
-                        if (phone.name && phone.price > 0) {
-                            this.phones.push(phone);
-                        }
-                    }
-                }
-                
-                this.filteredPhones = [...this.phones];
-                console.log('最终手机数据:', this.phones);
-            }
-            
-            parsePrice(priceText) {
-                if (!priceText) return 0;
-                // 提取数字，移除货币符号等非数字字符
-                const match = priceText.toString().match(/(\d+(\.\d+)?)/);
-                return match ? parseFloat(match[1]) : 0;
-            }
-            
-            parseTags(name) {
-                const tags = [];
-                const nameLower = name.toLowerCase();
-                
-                if (nameLower.includes('新') || nameLower.includes('new')) {
-                    tags.push('新');
-                }
-                if (nameLower.includes('盒损') || nameLower.includes('damage')) {
-                    tags.push('盒损');
-                }
-                if (nameLower.includes('热销') || nameLower.includes('hot')) {
-                    tags.push('热销');
-                }
-                
-                return tags;
-            }
-            
-            parseBrand(name) {
-                const nameLower = name.toLowerCase();
-                
-                if (nameLower.includes('苹果') || nameLower.includes('iphone')) {
-                    return 'apple';
-                } else if (nameLower.includes('小米')) {
-                    return 'xiaomi';
-                } else if (nameLower.includes('华为')) {
-                    return 'huawei';
-                } else if (nameLower.includes('三星')) {
-                    return 'samsung';
-                } else if (nameLower.includes('oppo')) {
-                    return 'oppo';
-                } else if (nameLower.includes('vivo')) {
-                    return 'vivo';
-                } else {
-                    return 'other';
-                }
-            }
-            
-            setupEventListeners() {
-                // 搜索功能
-                const searchInput = document.getElementById('searchInput');
-                searchInput.addEventListener('input', (e) => {
-                    this.filterProducts(e.target.value);
-                });
-                
-                // 分类筛选
-                const filterButtons = document.querySelectorAll('.filter-btn');
-                filterButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        filterButtons.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentCategory = btn.dataset.category;
-                        this.filterProducts(searchInput.value);
-                    });
-                });
-            }
-            
-            filterProducts(searchText = '') {
-                let filtered = this.phones;
-                
-                // 分类筛选
-                if (this.currentCategory !== 'all') {
-                    filtered = filtered.filter(phone => phone.brand === this.currentCategory);
-                }
-                
-                // 搜索筛选
-                if (searchText) {
-                    const text = searchText.toLowerCase();
-                    filtered = filtered.filter(phone => 
-                        phone.name.toLowerCase().includes(text)
-                    );
-                }
-                
-                this.filteredPhones = filtered;
-                this.render();
-            }
-            
-            render() {
-                const table = document.getElementById('priceTable');
-                
-                if (this.filteredPhones.length === 0) {
-                    table.innerHTML = '<div class="error-message">未找到相关手机，请检查表格数据</div>';
-                    return;
-                }
-                
-                // 按品牌分组
-                const brands = {};
-                this.filteredPhones.forEach(phone => {
-                    if (!brands[phone.brand]) {
-                        brands[phone.brand] = [];
-                    }
-                    brands[phone.brand].push(phone);
-                });
-                
-                // 品牌显示顺序
-                const brandOrder = ['apple', 'xiaomi', 'huawei', 'samsung', 'oppo', 'vivo', 'other'];
-                const brandNames = {
-                    'apple': '苹果',
-                    'xiaomi': '小米',
-                    'huawei': '华为',
-                    'samsung': '三星',
-                    'oppo': 'OPPO',
-                    'vivo': 'VIVO',
-                    'other': '其他'
-                };
-                
-                let html = `
-                    <div class="table-header">
-                        <div>商品名称</div>
-                        <div>价格</div>
-                        <div>库存</div>
-                        <div>操作</div>
-                    </div>
-                `;
-                
-                brandOrder.forEach(brand => {
-                    if (brands[brand] && brands[brand].length > 0) {
-                        html += `<div class="brand-section">
-                            <div class="brand-title">${brandNames[brand]}</div>`;
-                        
-                        brands[brand].forEach(phone => {
-                            html += this.renderPhoneRow(phone);
-                        });
-                        
-                        html += `</div>`;
-                    }
-                });
-                
-                table.innerHTML = html;
-                
-                // 更新显示时间
-                document.getElementById('updateTime').textContent = new Date().toLocaleString('zh-CN');
-            }
-            
-            renderPhoneRow(phone) {
-                const tagsHtml = phone.tags.map(tag => {
-                    let className = 'tag';
-                    if (tag === '新') className += ' tag-new';
-                    else if (tag === '盒损') className += ' tag-damage';
-                    else if (tag === '热销') className += ' tag-hot';
-                    
-                    return `<span class="${className}">${tag}</span>`;
-                }).join('');
-                
-                const stockText = phone.stock > 0 ? `${phone.stock} 件` : '缺货';
-                const stockClass = phone.stock > 0 ? '' : 'out-of-stock';
-                
-                return `
-                    <div class="phone-row">
-                        <div class="phone-name">
-                            ${tagsHtml}
-                            ${phone.name}
-                        </div>
-                        <div class="phone-price">¥ ${phone.price}</div>
-                        <div class="phone-stock ${stockClass}">${stockText}</div>
-                        <div>
-                            ${phone.stock > 0 ? 
-                                '<button class="buy-btn">购买</button>' : 
-                                '<button class="buy-btn" disabled>缺货</button>'
-                            }
-                        </div>
-                    </div>
-                `;
-            }
-            
-            showLoading() {
-                const table = document.getElementById('priceTable');
-                table.innerHTML = '<div class="loading">正在加载报价...</div>';
-            }
-            
-            showError(message) {
-                const table = document.getElementById('priceTable');
-                table.innerHTML = `<div class="error-message">${message}</div>`;
-            }
-            
-            updateLocalStorage() {
-                localStorage.setItem('phonePrices', JSON.stringify({
-                    data: this.phones,
-                    timestamp: Date.now()
-                }));
-            }
-            
-            useCachedData(silent = false) {
-                const cached = localStorage.getItem('phonePrices');
-                if (cached) {
-                    const { data, timestamp } = JSON.parse(cached);
-                    this.phones = data;
-                    this.filteredPhones = [...data];
-                    if (!silent) {
-                        this.render();
-                        const time = new Date(timestamp).toLocaleString('zh-CN');
-                        document.getElementById('updateTime').textContent = `${time} (缓存)`;
-                    }
-                    return true;
-                } else {
-                    if (!silent) {
-                        // 如果没有缓存数据，显示示例数据
-                        this.showExampleData();
-                    }
-                    return false;
-                }
-            }
-            
-            showExampleData() {
-                this.phones = [
-                    { 
-                        id: 1, 
-                        brand: 'apple',
-                        name: '盒损-苹果16Pro-Max(3297)-1TB黑色钛金属(TY3-XW3)', 
-                        price: 11800, 
-                        stock: 1,
-                        tags: ['盒损']
-                    },
-                    { 
-                        id: 2, 
-                        brand: 'apple',
-                        name: '盒损-苹果16Pro(3294)-512G原色钛金属(M43-QM3)', 
-                        price: 8950, 
-                        stock: 1,
-                        tags: ['盒损']
-                    },
-                    { 
-                        id: 3, 
-                        brand: 'apple',
-                        name: '盒损-苹果17(3521)-256G青雾蓝色(6Y4-794)', 
-                        price: 5900, 
-                        stock: 1,
-                        tags: ['盒损', '新']
-                    }
-                ];
-                this.filteredPhones = [...this.phones];
-                this.render();
-                
-                document.getElementById('updateTime').textContent = '示例数据 - 请检查表格链接和数据';
-            }
+            // 激活选中的标签
+            event.target.classList.add('active');
         }
-        
-        // 创建全局实例
-        const priceManager = new PriceManager();
     </script>
 </body>
 </html>
