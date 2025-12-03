@@ -1,0 +1,124 @@
+/* mobile.css - 移动端专用样式 */
+
+/* 基础重置 */
+@media (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+    
+    body {
+        padding: 0;
+        margin: 0;
+        background: #f8f9fa;
+    }
+    
+    /* 导航栏优化 */
+    .navbar {
+        padding: 10px 0;
+    }
+    
+    .navbar-brand {
+        font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 70%;
+    }
+    
+    /* 表格优化 */
+    table {
+        width: 100%;
+        font-size: 0.9rem;
+    }
+    
+    th, td {
+        padding: 8px 6px;
+        white-space: nowrap;
+    }
+    
+    /* 隐藏不必要的列 */
+    .hide-on-mobile {
+        display: none;
+    }
+    
+    /* 卡片优化 */
+    .card {
+        margin: 10px 0;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    /* 按钮组优化 */
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .btn-group .btn {
+        flex: 1;
+        min-width: 120px;
+        margin: 2px;
+    }
+    
+    /* 输入框优化 */
+    input, select, textarea {
+        font-size: 16px !important; /* 防止iOS缩放 */
+    }
+    
+    /* 加载动画 */
+    .loading {
+        padding: 40px 0;
+        text-align: center;
+    }
+    
+    /* 滚动优化 */
+    * {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* 小屏手机 */
+@media (max-width: 480px) {
+    html {
+        font-size: 13px;
+    }
+    
+    .container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    table {
+        font-size: 0.85rem;
+    }
+    
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.3rem; }
+    h3 { font-size: 1.1rem; }
+    
+    /* 简化表格 */
+    .simplify-table td:nth-child(5),
+    .simplify-table td:nth-child(6),
+    .simplify-table td:nth-child(8) {
+        display: none;
+    }
+    
+    /* 使用图标代替文字 */
+    .icon-label {
+        display: inline-block;
+        width: 30px;
+        text-align: center;
+    }
+}
+
+/* 平板优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 95%;
+    }
+}
